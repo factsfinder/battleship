@@ -1,13 +1,8 @@
 import { useContext } from "react";
 import styled from "styled-components";
 
-import { GameContext } from "./context";
-
-const Row = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-`;
+import { GameContext, GAME_ACTION_TYPES } from "./context";
+import { Row } from "./styles";
 
 const GameBoardContainer = styled(Row)`
   width: 400px;
@@ -39,7 +34,7 @@ const GameSquare = styled(Square)`
 
 function Board({ player }) {
   const { state, dispatch } = useContext(GameContext);
-  const { shipsArranged } = state[player];
+  const { shipsArranged, bombedCoordinates } = state[player];
   const alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
   const alphabetSquares = alphabets.map((alpha) => (
     <Square key={alpha}>{alpha}</Square>
@@ -52,22 +47,35 @@ function Board({ player }) {
       gameCoordinates.push(`${alphabets[j]}${numbers[i]}`);
     }
   }
+
   const GameBoard = () => {
     return gameCoordinates.map((coord) => {
-        const handleSquareClick = () => {
-          
+      const isBombed = bombedCoordinates.includes(coord);
+      const handleSquareClick = () => {
+        const actionType = shipsArranged
+          ? GAME_ACTION_TYPES.PLACE_BOMB
+          : GAME_ACTION_TYPES.ARRANGE_SHIP;
+        dispatch({ type: actionType, player, coord });
       };
-      return <GameSquare key={coord} onClick={handleSquareClick} />;
+      return (
+        <GameSquare key={coord} onClick={handleSquareClick}>
+          {shipsArranged && isBombed && <p>X</p>}
+        </GameSquare>
+      );
     });
   };
+
   return (
-    <Row>
-      <Col>{numberSqaures}</Col>
-      <GameBoardContainer>
-        {alphabetSquares}
-        <GameBoard />
-      </GameBoardContainer>
-    </Row>
+    <Col>
+      <h2>{player}</h2>
+      <Row>
+        <Col>{numberSqaures}</Col>
+        <GameBoardContainer>
+          {alphabetSquares}
+          <GameBoard />
+        </GameBoardContainer>
+      </Row>
+    </Col>
   );
 }
 

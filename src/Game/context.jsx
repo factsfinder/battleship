@@ -29,7 +29,14 @@ const reducer = (state, action) => {
     case GAME_ACTION_TYPES.ARRANGE_SHIP:
       return { ...state };
     case GAME_ACTION_TYPES.PLACE_BOMB:
-      return { ...state };
+      const currentPlayer = state[action.player];
+      return {
+        ...state,
+        [action.player]: {
+          ...currentPlayer,
+          bombedCoordinates: [...currentPlayer.bombedCoordinates, action.coord],
+        },
+      };
     default:
       return state;
   }

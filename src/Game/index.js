@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 import { GameProvider } from "./context";
 import Board from "./Board";
+import Ship from "./Ship";
 
 const GameContainer = styled.div`
   display: flex;
@@ -10,12 +11,16 @@ const GameContainer = styled.div`
   box-sizing: border-box;
 `;
 
+const PlayerBoard = styled.div``;
+
 function Game() {
   return (
     <GameContainer>
       <GameProvider>
-        <Board player="Player1" />
-        {/* <Board player="Player2" /> */}
+        <PlayerBoard>
+          <Board player="Player1" />
+          <Ship />
+        </PlayerBoard>
       </GameProvider>
     </GameContainer>
   );
